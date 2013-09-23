@@ -1,9 +1,10 @@
 class Tile
-  def initialize(position, bomb)
+  def initialize(position, bomb, size)
     @position = position
     @bomb = bomb
     @flagged = false
     @revealed = false
+    @size = size
   end
 
   def explore
@@ -13,7 +14,17 @@ class Tile
 
   def neighbors
     #return list of neighbors
-
+    neighbors = []
+    [-1, 0, 1].each do |x|
+      [-1, 0, 1].each do |y|
+        next if x == 0 && y == 0
+        neighbors << [@position[0] + x, @position[1] + y]
+      end
+    end
+    neighbors.delete_if do |neighbor|
+      neighbor[0] > @size[0] || neighbor[0] < 0 || neighbor[1] > @size[1] || neighbor[1] < 0
+    end
+    neighbors
   end
 
   def adjacent_bombs
@@ -46,7 +57,7 @@ class Board
     size[0].times do |row|
       row = []
       size[1].times do |col|
-        row << Tile.new([row, col], mine_array.pop)
+        row << Tile.new([row, col], mine_array.pop, @size)
       end
       board << row
     end
