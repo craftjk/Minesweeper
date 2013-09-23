@@ -32,6 +32,21 @@ class Tile
     true
   end
 
+  def display
+    if @revealed
+      if adjacent_bombs > 0
+        return adjacent_bombs
+      else
+        return "_"
+      end
+    else
+      return "*" unless @flagged
+      return "F"
+    end
+  end
+
+  private
+
   def neighbors
     #return list of neighbors
     neighbors = []
@@ -47,8 +62,6 @@ class Tile
     neighbors
   end
 
-  private
-
   def adjacent_bombs
     bomb_count = 0
     neighbors.each do |neighbor|
@@ -57,18 +70,7 @@ class Tile
     bomb_count
   end
 
-  def display
-    if @revealed
-      if adjacent_bombs > 0
-        return adjacent_bombs
-      else
-        return "_"
-      end
-    else
-      return "*" unless @flagged
-      return "F"
-    end
-  end
+
 end
 
 class Board
@@ -93,9 +95,6 @@ class Board
 
 
   def generate_bombs
-    #  one dimensional array
-    #  eg 64 long false false flase
-    #  randomly change 10 to true
     mine_array = Array.new(@size[0] * @size[1]) { false }
     @num_mines.times do
       index = rand(0...mine_array.length)
@@ -123,6 +122,12 @@ class Board
   end
 
   def display_board
+    @tiles.each do |row|
+      row.each do |tile|
+        print tile.display
+      end
+      puts
+    end
   end
 
   def won?
