@@ -26,9 +26,50 @@ class Board
   end
 
   def generate_board
+    mine_array = generate_bombs
+    board = []
+    size[0].times do |row|
+      row = []
+      size[1].times do |col|
+        row << Tile.new([row, col], mine_array.pop)
+      end
+      board << row
+    end
+    board
+  end
+
+
+  def generate_bombs
+    #  one dimensional array
+    #  eg 64 long false false flase
+    #  randomly change 10 to true
+    mine_array = Array.new(@size[0] * @size[1]) { false }
+    @num_mines.times do
+      index = rand(0...mine_array.length)
+      while mine_array[index] == true
+        index = rand(0...mine_array.length)
+      end
+      mine_array[index] = true
+    end
+    mine_array
   end
 
   def run
+    #  setup board
+    #    generate board
+    #    generate bombs
+    #  until won? || lost?
+    #    prompt
+    #    (flag)
+    #    reveal_tile
+    #      explore if empty
+    #      lose if bomb
+    #    display_board
+    #  end
+    #
+  end
+
+  def display_board
   end
 
   def won?
