@@ -69,8 +69,6 @@ class Tile
     end
     bomb_count
   end
-
-
 end
 
 class Board
@@ -113,7 +111,7 @@ class Board
     #  until won? || lost?
     #    prompt
     #    (flag)
-    #    reveal_tile
+    #    if reveal_tile == false then lost
     #      explore if empty
     #      lose if bomb
     #    display_board
@@ -131,9 +129,18 @@ class Board
   end
 
   def won?
+    all_revealed = true
+    @tiles.each do |row|
+      row.each do |tile|
+        all_revealed = false if !tile.revealed && !tile.bomb
+      end
+    end
+    puts ":)" if all_revealed
+    all_revealed
   end
 
   def lost?
+    puts "X("
   end
 
   def save
@@ -142,7 +149,14 @@ class Board
   def self.load
   end
 
-  def prompt
+  def prompt_action
+    puts "[R]eveal or [F]lag?"
+    gets.chomp
+  end
+
+  def prompt_tile
+    puts "Which tile? (e.g. '2,3')"
+    tile = gets.chomp.split(',').map(&:to_i)
   end
 end
 
@@ -151,6 +165,7 @@ class Player
   end
 
   def reveal_tile(position)
+
   end
 
   def flag_tile(position)
