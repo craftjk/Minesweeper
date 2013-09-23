@@ -1,15 +1,27 @@
 class Tile
-  def initialize(position, bomb, size)
+  def initialize(position, bomb, tiles)
     @position = position
     @bomb = bomb
     @flagged = false
     @revealed = false
-    @size = size
+    @tiles = tiles
+    @explored = false
   end
+
 
   def explore
     #recursively explore neighbor tiles
-
+    if @flagged
+      puts "You can't reveal a flagged tile."
+      return
+    end
+    @revealed = true
+    @explored = true
+    if adjacent_bombs == 0
+      neighbors.each do |adj_tile|
+        @tiles[adj_tile[0]][adj_tile[1]].explore
+      end
+    end
   end
 
   def neighbors
@@ -22,7 +34,7 @@ class Tile
       end
     end
     neighbors.delete_if do |neighbor|
-      neighbor[0] > @size[0] || neighbor[0] < 0 || neighbor[1] > @size[1] || neighbor[1] < 0
+      neighbor[0] > @tiles.length || neighbor[0] < 0 || neighbor[1] > @tiles.first.length || neighbor[1] < 0
     end
     neighbors
   end
