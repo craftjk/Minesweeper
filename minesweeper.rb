@@ -8,13 +8,28 @@ class Tile
 
   def explore
     #recursively explore neighbor tiles
+
   end
 
   def neighbors
     #return list of neighbors
+
   end
 
   def adjacent_bombs
+  end
+
+  def display
+    if @revealed
+      if adjacent_bombs > 0
+        return adjacent_bombs
+      else
+        return "_"
+      end
+    else
+      return "*" unless @flagged
+      return "F"
+    end
   end
 end
 
