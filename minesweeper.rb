@@ -1,4 +1,5 @@
 class Tile
+  attr_reader :bomb, explored:, flagged:
   def initialize(position, bomb, tiles)
     @position = position
     @bomb = bomb
@@ -17,11 +18,18 @@ class Tile
     end
     @revealed = true
     @explored = true
+
+    if @bomb
+      return false
+    end
+
     if adjacent_bombs == 0
       neighbors.each do |adj_tile|
-        @tiles[adj_tile[0]][adj_tile[1]].explore
+        tile = @tiles[adj_tile[0]][adj_tile[1]]
+        tile.explore unless (tile.explored || tile.flagged)
       end
     end
+    true
   end
 
   def neighbors
@@ -39,7 +47,14 @@ class Tile
     neighbors
   end
 
+  private
+
   def adjacent_bombs
+    bomb_count = 0
+    neighbors.each do |neighbor|
+      bomb_count += 1 if @tiles[neighbor[0]][neighbor[1]].bomb
+    end
+    bomb_count
   end
 
   def display
