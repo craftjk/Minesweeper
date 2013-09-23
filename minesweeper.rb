@@ -105,18 +105,23 @@ class Board
   end
 
   def run
-    #  setup board
-    #    generate board
-    #    generate bombs
-    #  until won? || lost?
-    #    prompt
-    #    (flag)
-    #    if reveal_tile == false then lost
-    #      explore if empty
-    #      lose if bomb
-    #    display_board
-    #  end
-    #
+    generate_board
+    until won? || revealed_bomb
+      action = prompt_action
+      tile_position = prompt_tile
+      tile = @board[tile_position[0]][tile_position[1]]
+      if action == "R"
+        revealed_bomb = !tile.explore
+        lose if revealed_bomb
+      elsif action == "F"
+        tile.flag
+      else
+        puts "Please input R or F for action."
+        next
+      end
+
+      display_board
+    end
   end
 
   def display_board
@@ -135,12 +140,12 @@ class Board
         all_revealed = false if !tile.revealed && !tile.bomb
       end
     end
-    puts ":)" if all_revealed
+    puts "8)" if all_revealed
     all_revealed
   end
 
-  def lost?
-    puts "X("
+  def lose
+    puts "(x_x)"
   end
 
   def save
@@ -171,3 +176,6 @@ class Player
   def flag_tile(position)
   end
 end
+
+game = Board.new([9,9], 10)
+game.run
