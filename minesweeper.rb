@@ -1,4 +1,5 @@
 # require 'debugger'
+require 'yaml'
 
 class Tile
   attr_accessor :flagged
@@ -122,6 +123,8 @@ class Board
         tile.explore
       elsif action == "F"
         tile.flagged = true
+      elsif action == "SAVE"
+        save
       else
         puts "Please input R or F for action."
         next
@@ -159,9 +162,12 @@ class Board
   end
 
   def save
+    board_yaml = self.to_yaml
+    File.open('minesweeper_savegame', 'w') { |file| file.write(board_yaml) }
   end
 
   def self.load
+    YAML::load(File.read('minesweeper_savegame'))
   end
 
   def prompt_action
@@ -187,5 +193,8 @@ class Player
   end
 end
 
-game = Board.new([16,16], 40)
+# game = Board.new([16,16], 20)
+# game.run
+
+game = Board.load
 game.run
