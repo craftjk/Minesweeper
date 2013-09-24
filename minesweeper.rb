@@ -21,10 +21,7 @@ class Tile
     end
     @revealed = true
     @explored = true
-    p @bomb
-    p @position
     if @bomb
-      puts "Bomb 'triggered'"
       return false
     end
 
@@ -37,18 +34,16 @@ class Tile
     true
   end
 
-  def display
+  def display(game_over)
     if @revealed
       if adjacent_bombs > 0
         return " #{adjacent_bombs.to_s} "
       else
         return " _ "
       end
-    elsif @bomb
-      return " B "
     else
+      return " B " if @bomb && game_over
       return " * " unless @flagged
-      @flagged = true
       return " F "
     end
   end
@@ -100,7 +95,6 @@ class Board
     board
   end
 
-
   def generate_bombs
     mine_array = Array.new(@size[0] * @size[1]) { false }
     @num_mines.times do
@@ -114,36 +108,32 @@ class Board
   end
 
   def run
-    @board = generate_board
+    # @board = generate_board
     revealed_bomb = false
     until won? || revealed_bomb
 
       display_board
       action = prompt_action
       tile_position = prompt_tile
-      tile = @board[tile_position[0]][tile_position[1]]
+      tile = @tiles[tile_position[0]][tile_position[1]]
       if action == "R"
-        tile.explore
-        display_board
         revealed_bomb = tile.bomb
-        p "Revealed bomb is #{revealed_bomb}"
         lose if revealed_bomb
+        tile.explore
       elsif action == "F"
         tile.flagged = true
-        p tile.position
-        p tile.flagged
       else
         puts "Please input R or F for action."
         next
       end
     end
-    display_board
+    display_board(true)
   end
 
-  def display_board
+  def display_board(game_over = false)
     @tiles.each do |row|
       row.each do |tile|
-        print tile.display
+        print tile.display(game_over)
       end
       puts
     end
@@ -197,5 +187,5 @@ class Player
   end
 end
 
-game = Board.new([9,9], 10)
+game = Board.new([9,9], 2)
 game.run
