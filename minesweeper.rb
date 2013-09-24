@@ -187,5 +187,5 @@ class Player
   end
 end
 
-game = Board.new([9,9], 2)
+game = Board.new([16,16], 40)
 game.run
